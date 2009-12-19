@@ -1,0 +1,506 @@
+<!DOCTYPE HTML>
+<html i18n-values="dir:textdirection;">
+<head>
+<meta charset="utf-8">
+<title>Content Browser</title>
+<style type="text/css">
+div.header {
+  border-bottom: 1px solid #006;
+  padding: 8px;
+  margin: 0;
+  width: 100%;
+  left: 0;
+  top: 0;
+  min-height: 26px;
+  position: absolute;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-image: -webkit-gradient(linear,
+                                     0% 0%,
+                                     0% 90%,
+                                     from(rgb(239, 242, 249)),
+                                     to(rgba(201, 212, 245, 1)));
+  border-bottom-color: #999;
+  border-bottom-width: 1px;
+  color: black;
+}
+
+a.iconlink {
+  display: block;
+  font-family: helvetica;
+  font-weight: bold;
+  font-size: 11px;
+  color: white;
+  text-decoration: none;
+}
+
+a.iconlink img {
+  margin-bottom: 5px;
+}
+
+ul.filebrowselist {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+li.filebrowserow div.icon {
+  float: left;
+  margin-left: -44px;
+  margin-top: -3px;
+  display: inline
+  position: relative;
+  width: 17px;
+  height: 17px;
+  background-repeat: no-repeat;
+}
+
+.rightarrow {
+  margin-top: 2px;
+  position: absolute;
+  right: 0;
+  top: 5px;
+  height: 100%;
+  width: 10px;
+}
+
+.uploadicon {
+  background: url('../../app/theme/filebrowse_upload.png');
+  position: absolute;
+  right: 0;
+  top: 5px;
+  height: 100%;
+  width: 12px;
+  margin-left: 5px;
+  margin-top: 5px;
+  background-repeat: no-repeat;
+  cursor:pointer;
+}
+
+.uploadcomplete {
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 5px;
+  height: 100%;
+  width: 70px;
+  margin-left: 5px;
+  margin-top: 5px;
+}
+
+.uploadprogress {
+  position: absolute;
+  right: 0;
+  top: 5px;
+  height: 100%;
+  width: 12px;
+  margin-left: 5px;
+  margin-top: 5px;
+  background-repeat: no-repeat;
+}
+
+li.filebrowserow {
+  border-bottom: 1px solid #f7f7f7;
+  padding: 8px 5px 5px 54px;
+/*  overflow: hidden; */
+  font-size:.8em;
+  font-family: helvetica;
+  position: relative;
+}
+
+li.filebrowserow span.name {
+  margin-top: 10px;
+  margin-left: -22px;
+  position: relative;
+}
+
+div.title {
+  text-align: center;
+  position: relative;
+  font-size: .8em;
+  font-weight: bold;
+  padding-top: 10px;
+}
+
+div.controlbutton {
+  width: 20px;
+  display:inline;
+  position: absolute;
+  z-index:9999;
+  border:1px solid #abb6ce;
+  background-color: #f5f7fc;
+  padding-left: 7px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-right: 7px;
+  height: 20px;
+}
+
+div.iconmedia {
+  background: url('../../app/theme/icon_media.png');
+}
+
+div.iconfolder {
+  background: url('../../app/theme/icon_folder.png');
+}
+
+div.iconfile {
+  background: url('../../app/theme/icon_file.png');
+}
+
+div.iconphoto {
+  background: url('../../app/theme/icon_photo.png');
+}
+
+div.iconmusic {
+  background: url('../../app/theme/icon_media.png');
+}
+
+div.backbutton {
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  left: 10px;
+  top: 10px
+}
+
+div.fwdbutton {
+  -webkit-border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  left: 45px;
+  top: 10px;
+}
+
+div.playbackcontainer {
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: black;
+}
+
+div.container {
+  top: 50px;
+  position: absolute;
+  width: 95%;
+}
+
+.mediacontainer {
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.uploadmenu {
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 70px;
+  position: absolute;
+  display: none;
+  z-index: 999;
+  background: white;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.uploadmenuitem {
+  width: 100%;
+  height: 20px;
+  text-align: left;
+  cursor: pointer;
+  left: 0;
+  color: blue;
+  text-decoration: underline;
+}
+
+.uploadmenuitemdisabled {
+  width: 100%;
+  height: 20px;
+  text-align: left;
+  color: gray;
+  left: 0;
+}
+
+a:hover {
+  color: #3874be;
+  text-decoration: underline;
+  display: block;
+}
+
+</style>
+<script src="local_strings.js"></script>
+<script>
+
+
+
+function $(o) {
+  return document.getElementById(o);
+}
+
+var pathArray = [];
+var currentNode = -1;
+var foundImages = [];
+var currentImageMenu = '';
+
+function goBackInList() {
+  if (currentNode > 0) {
+    currentNode--;
+    getDataForPath(pathArray[currentNode]);
+  }
+};
+
+function goForwardInList() {
+  if (currentNode < (pathArray.length - 1)) {
+    currentNode++;
+    getDataForPath(pathArray[currentNode]);
+  }
+};
+
+function browseFileResult(info, results) {
+   if (info.functionCall == 'getRoots' ||
+       info.functionCall == 'getChildren') {
+     currentNode++;
+     createNewList('Removeable Media', results);
+   }
+}
+
+function pathIsVideoFile(path) {
+  return /\.(mp4|ogg|mpg|avi)$/i.test(path);
+};
+
+function pathIsAudioFile(path) {
+  return /\.(mp3|m4a)$/i.test(path);
+};
+
+function pathIsImageFile(path) {
+  return /\.(jpg|png|gif)$/i.test(path);
+};
+
+
+function setUpForPlayback(path) {
+   var mediapath = 'file://' + path;
+   var header = $('header');
+   document.body.removeChild(header);
+   var main = $('main');
+   main.className = 'playbackcontainer';
+   var elementType;
+   if (pathIsVideoFile(path)) {
+     elementType = 'video';
+   } else if (pathIsAudioFile(path)) {
+     elementType = 'audio';
+   } else {
+     // close because we can't deal with this.
+     return;
+   }
+   var element = document.createElement(elementType);
+   element.className = 'mediacontainer';
+   element.autoplay = true;
+   element.controls = true;
+   element.src = mediapath;
+   main.appendChild(element);
+};
+
+function getClassForPath(path, isDirectory) {
+  if (isDirectory) {
+    return 'icon iconfolder';
+  } else if (pathIsImageFile(path)) {
+    return 'icon iconphoto';
+  } else if (pathIsVideoFile(path)) {
+    return 'icon iconmedia';
+  } else if (pathIsAudioFile(path)) {
+    return 'icon iconmusic';
+  }
+  return 'icon iconfile';
+};
+
+function getDataForPath(path) {
+  if (path == 'roots' ) {
+    chrome.send('getRoots', []);
+  } else {
+    chrome.send('getChildren', [path]);
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// Document Functions:
+/**
+ * Window onload handler, sets up the page.
+ */
+function load() {
+  if (document.location.href.indexOf('#') != -1) {
+    var currentpathArray = document.location.href.split('#');
+    var path = currentpathArray[1];
+    if (pathIsVideoFile(path) || pathIsAudioFile(path)) {
+      setUpForPlayback(path);
+    } else {
+      pathArray.push(path);
+      getDataForPath(path);
+    }
+  } else {
+    pathArray.push('roots');
+    getDataForPath('roots');
+  }
+};
+
+function descend(path) {
+  if (pathArray.length <currentNode) {
+    pathArray = pathArray.slice(0, currentNode);
+  }
+  pathArray.push(path);
+  getDataForPath(path);
+};
+
+function playMediaFile(path) {
+  var newPath = 'chrome://filebrowse#' + path;
+  chrome.send('openNewPopupWindow', [newPath]);
+};
+
+function showImage(path) {
+  chrome.send('openNewFullWindow', ['file://' + path]);
+};
+
+function clearImageMenus() {
+  if (foundImages[currentImageMenu]) {
+    var element = foundImages[currentImageMenu];
+    element.firstChild.style.display = 'none';
+    currentImageMenu = '';
+  }
+};
+
+function uploadImage(path) {
+  if (foundImages[path]) {
+    var element = foundImages[path];
+    element.onclick = undefined;
+    element.className = 'uploadprogress';
+  }
+  chrome.send('uploadToPicasaweb', [path]);
+};
+
+function showMenu(path) {
+  if (foundImages[path]) {
+    clearImageMenus();
+    var element = foundImages[path];
+    element.firstChild.style.display = 'block';
+    currentImageMenu = path;
+  }
+  window.event.stopPropagation();
+}
+
+function uploadComplete(result) {
+  if (foundImages[result.path]) {
+    var element = foundImages[result.path];
+    element.className = 'uploadcomplete';
+    if (result.status_code == 201) {
+      element.innerHTML = '<a href=' + result.url + '>Uploaded</a>';
+    } else {
+      element.textContent = 'Error';
+    }
+  }
+};
+
+// TODO(dhg): Do not use javascript: href, use onclick instead
+function createHrefForItem(path, isDirectory) {
+  if (isDirectory) {
+    return 'javascript:descend("' + path + '");';
+  } if (pathIsAudioFile(path)) {
+    return 'javascript:playMediaFile("' + path + '");';
+  } if (pathIsVideoFile(path)) {
+    return 'javascript:playMediaFile("' + path + '");';
+  } if (pathIsImageFile(path)) {
+    return 'javascript:showImage("' + path + '");';
+  } else {
+    return '';
+  }
+};
+
+function createNewItem(title, path, isDirectory) {
+  var element = document.createElement('li');
+  element.className = 'filebrowserow';
+
+  var link = document.createElement('a');
+  link.className = 'rowlink';
+  link.href = createHrefForItem(path, isDirectory);
+
+  var icon = document.createElement('div');
+  icon.className = getClassForPath(path, isDirectory);
+  link.appendChild(icon);
+
+  var span = document.createElement('span');
+  span.className = 'name';
+  span.textContent = title;
+  link.appendChild(span);
+
+  element.appendChild(link);
+  if (isDirectory) {
+    var rightarrow = document.createElement('div');
+    rightarrow.align = 'right';
+    rightarrow.innerHTML = '&raquo;';
+    rightarrow.className = 'rightarrow';
+    element.appendChild(rightarrow);
+  } else if (pathIsImageFile(path)) {
+    var uploadicon = document.createElement('div');
+    var uploadmenu = document.createElement('div');
+    uploadmenu.className = 'uploadmenu';
+    var picasaitem = document.createElement('div');
+    var flikritem = document.createElement('div');
+    var emailitem = document.createElement('div');
+    picasaitem.textContent = 'Picasa Web';
+    flikritem.textContent = 'Flikr';
+    emailitem.textContent = 'Email';
+    picasaitem.className = 'uploadmenuitem';
+    flikritem.className = 'uploadmenuitemdisabled';
+    emailitem.className = 'uploadmenuitemdisabled';
+    picasaitem.onclick = new Function('uploadImage("' + path + '")');
+    uploadmenu.appendChild(picasaitem);
+    uploadmenu.appendChild(flikritem);
+    uploadmenu.appendChild(emailitem);
+    uploadicon.align = 'right';
+    uploadicon.className = 'uploadicon';
+    uploadicon.onclick = new Function('showMenu("' + path + '")');
+    uploadicon.appendChild(uploadmenu);
+    element.appendChild(uploadicon);
+    // Doing this so that we can change it when we get events
+    foundImages[path] = uploadicon;
+  }
+
+  return element;
+};
+
+function clearChildren(element) {
+  element.innerHTML = '';
+};
+
+function createNewList(title, results) {
+  var list = document.createElement('ul');
+  list.className = 'filebrowselist';
+  var header = $('currenttitle');
+  header.innerHTML = title;
+  for (var x=0; x < results.length; x++) {
+    var element = createNewItem(results[x].title,
+                                results[x].path,
+                                results[x].isDirectory);
+    list.appendChild(element);
+  }
+  var main = $('main');
+  clearChildren(main);
+  main.appendChild(list);
+};
+
+</script>
+<body onload="load();" onclick='clearImageMenus()'>
+<div id='header' class='header'>
+  <div id='back' class='backbutton controlbutton' onclick='goBackInList();return false;'>
+    <img src="../../app/theme/filebrowse_back.png" width='100%' height='100%'>
+  </div>
+  <div id='fwd' class='fwdbutton controlbutton' onclick='goForwardInList();return false;'>
+    <img src="../../app/theme/filebrowse_forward.png" width='100%' height='100%'>
+  </div>
+  <div id='currenttitle' class='title'></div>
+</div><br>
+<div id='main' class='container'></div>
+</body>
+</html>
