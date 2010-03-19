@@ -28,9 +28,9 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <OpenGL/OpenGL.h>
 
+#include "app/surface/transport_dib.h"
 #include "base/basictypes.h"
 #include "base/scoped_ptr.h"
-#include "chrome/common/transport_dib.h"
 #include "gfx/native_widget_types.h"
 #include "gfx/rect.h"
 
