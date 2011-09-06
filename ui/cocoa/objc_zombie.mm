@@ -20,7 +20,7 @@
 #include "base/metrics/histogram.h"
 #include "base/synchronization/lock.h"
 #import "chrome/app/breakpad_mac.h"
-#import "chrome/browser/ui/cocoa/objc_method_swizzle.h"
+#import "chrome/common/mac/objc_method_swizzle.h"
 
 // Deallocated objects are re-classed as |CrZombie|.  No superclass
 // because then the class would have to override many/most of the
