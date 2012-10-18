@@ -2,42 +2,49 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef CHROME_BROWSER_CHROMEOS_EXTENSIONS_BLUETOOTH_EVENT_ROUTER_H_
-#define CHROME_BROWSER_CHROMEOS_EXTENSIONS_BLUETOOTH_EVENT_ROUTER_H_
+#ifndef CHROME_BROWSER_EXTENSIONS_BLUETOOTH_EVENT_ROUTER_H_
+#define CHROME_BROWSER_EXTENSIONS_BLUETOOTH_EVENT_ROUTER_H_
 
 #include <map>
 
 #include "base/memory/ref_counted.h"
 #include "base/memory/scoped_vector.h"
-#include "chrome/browser/chromeos/bluetooth/bluetooth_adapter.h"
-#include "chrome/browser/chromeos/bluetooth/bluetooth_socket.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/common/extensions/api/experimental_bluetooth.h"
+#include "device/bluetooth/bluetooth_adapter.h"
+#include "device/bluetooth/bluetooth_socket.h"
 
-namespace chromeos {
+namespace extensions {
 
 class ExtensionBluetoothEventRouter
-    : public chromeos::BluetoothAdapter::Observer {
+    : public device::BluetoothAdapter::Observer {
  public:
   explicit ExtensionBluetoothEventRouter(Profile* profile);
   virtual ~ExtensionBluetoothEventRouter();
 
-  const chromeos::BluetoothAdapter& adapter() const { return *adapter_.get(); }
+  // adapter() will return NULL if the bluetooth adapter is not supported in the
+  // current platform.
+  const device::BluetoothAdapter* adapter() const {
+    return adapter_.get();
+  }
 
-  // GetMutableAdapter will never return NULL.
-  chromeos::BluetoothAdapter* GetMutableAdapter() { return adapter_.get(); }
+  // GetMutableAdapter will return NULL if the bluetooth adapter is not
+  // supported in the current platform.
+  device::BluetoothAdapter* GetMutableAdapter() {
+    return adapter_.get();
+  }
 
   // Register the BluetoothSocket |socket| for use by the extensions system.
   // This class will hold onto the socket for its lifetime, or until
   // ReleaseSocket is called for the socket.  Returns an id for the socket.
-  int RegisterSocket(scoped_refptr<BluetoothSocket> socket);
+  int RegisterSocket(scoped_refptr<device::BluetoothSocket> socket);
 
   // Release the BluetoothSocket corresponding to |id|.  Returns true if
   // the socket was found and released, false otherwise.
   bool ReleaseSocket(int id);
 
   // Get the BluetoothSocket corresponding to |id|.
-  scoped_refptr<BluetoothSocket> GetSocket(int id);
+  scoped_refptr<device::BluetoothSocket> GetSocket(int id);
 
   // Sets whether this Profile is responsible for the discovering state of the
   // adapter.
@@ -52,18 +59,18 @@ class ExtensionBluetoothEventRouter
       const char* event_name,
       const extensions::api::experimental_bluetooth::Device& device);
 
-  // Override from chromeos::BluetoothAdapter::Observer
-  virtual void AdapterPresentChanged(chromeos::BluetoothAdapter* adapter,
+  // Override from device::BluetoothAdapter::Observer
+  virtual void AdapterPresentChanged(device::BluetoothAdapter* adapter,
                                      bool present) OVERRIDE;
-  virtual void AdapterPoweredChanged(chromeos::BluetoothAdapter* adapter,
+  virtual void AdapterPoweredChanged(device::BluetoothAdapter* adapter,
                                      bool has_power) OVERRIDE;
-  virtual void AdapterDiscoveringChanged(chromeos::BluetoothAdapter* adapter,
+  virtual void AdapterDiscoveringChanged(device::BluetoothAdapter* adapter,
                                          bool discovering) OVERRIDE;
-  virtual void DeviceAdded(chromeos::BluetoothAdapter* adapter,
-                           chromeos::BluetoothDevice* device) OVERRIDE;
+  virtual void DeviceAdded(device::BluetoothAdapter* adapter,
+                           device::BluetoothDevice* device) OVERRIDE;
 
   // Exposed for testing.
-  void SetAdapterForTest(chromeos::BluetoothAdapter* adapter) {
+  void SetAdapterForTest(device::BluetoothAdapter* adapter) {
     adapter_ = adapter;
   }
  private:
@@ -73,14 +80,14 @@ class ExtensionBluetoothEventRouter
   bool responsible_for_discovery_;
 
   Profile* profile_;
-  scoped_refptr<chromeos::BluetoothAdapter> adapter_;
+  scoped_refptr<device::BluetoothAdapter> adapter_;
 
   // The next id to use for referring to a BluetoothSocket.  We avoid using
   // the fd of the socket because we don't want to leak that information to
   // the extension javascript.
   int next_socket_id_;
 
-  typedef std::map<int, scoped_refptr<BluetoothSocket> > SocketMap;
+  typedef std::map<int, scoped_refptr<device::BluetoothSocket> > SocketMap;
   SocketMap socket_map_;
 
   typedef ScopedVector<extensions::api::experimental_bluetooth::Device>
@@ -90,6 +97,6 @@ class ExtensionBluetoothEventRouter
   DISALLOW_COPY_AND_ASSIGN(ExtensionBluetoothEventRouter);
 };
 
-}  // namespace chromeos
+}  // namespace extensions
 
-#endif  // CHROME_BROWSER_CHROMEOS_EXTENSIONS_BLUETOOTH_EVENT_ROUTER_H_
+#endif  // CHROME_BROWSER_EXTENSIONS_BLUETOOTH_EVENT_ROUTER_H_

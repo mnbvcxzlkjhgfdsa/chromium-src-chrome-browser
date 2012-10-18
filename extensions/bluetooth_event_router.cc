@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "chrome/browser/chromeos/extensions/bluetooth_event_router.h"
+#include "chrome/browser/extensions/bluetooth_event_router.h"
 
 #include <map>
 
@@ -10,35 +10,37 @@
 #include "base/memory/ref_counted.h"
 #include "base/memory/scoped_vector.h"
 #include "base/utf_string_conversions.h"
-#include "chrome/browser/chromeos/bluetooth/bluetooth_adapter.h"
-#include "chrome/browser/chromeos/bluetooth/bluetooth_adapter_factory.h"
-#include "chrome/browser/chromeos/bluetooth/bluetooth_device_chromeos.h"
-#include "chrome/browser/chromeos/bluetooth/bluetooth_socket.h"
 #include "chrome/browser/extensions/api/bluetooth/bluetooth_api_utils.h"
 #include "chrome/browser/extensions/event_names.h"
 #include "chrome/browser/extensions/event_router.h"
 #include "chrome/common/extensions/api/experimental_bluetooth.h"
+#include "device/bluetooth/bluetooth_adapter.h"
+#include "device/bluetooth/bluetooth_adapter_factory.h"
+#include "device/bluetooth/bluetooth_device.h"
+#include "device/bluetooth/bluetooth_socket.h"
 
 namespace experimental_bluetooth = extensions::api::experimental_bluetooth;
 
-namespace chromeos {
+namespace extensions {
 
 ExtensionBluetoothEventRouter::ExtensionBluetoothEventRouter(Profile* profile)
     : profile_(profile),
-      adapter_(chromeos::BluetoothAdapterFactory::DefaultAdapter()),
+      adapter_(device::BluetoothAdapterFactory::DefaultAdapter()),
       next_socket_id_(1) {
   DCHECK(profile_);
-  DCHECK(adapter_.get());
-  adapter_->AddObserver(this);
+  if (adapter_.get())
+    adapter_->AddObserver(this);
 }
 
 ExtensionBluetoothEventRouter::~ExtensionBluetoothEventRouter() {
-  adapter_->RemoveObserver(this);
+  if (adapter_.get())
+    adapter_->RemoveObserver(this);
+
   socket_map_.clear();
 }
 
 int ExtensionBluetoothEventRouter::RegisterSocket(
-    scoped_refptr<BluetoothSocket> socket) {
+    scoped_refptr<device::BluetoothSocket> socket) {
   // If there is a socket registered with the same fd, just return it's id
   for (SocketMap::const_iterator i = socket_map_.begin();
       i != socket_map_.end(); ++i) {
@@ -59,8 +61,8 @@ bool ExtensionBluetoothEventRouter::ReleaseSocket(int id) {
   return true;
 }
 
-scoped_refptr<BluetoothSocket> ExtensionBluetoothEventRouter::GetSocket(
-    int id) {
+scoped_refptr<device::BluetoothSocket>
+ExtensionBluetoothEventRouter::GetSocket(int id) {
   SocketMap::iterator socket_entry = socket_map_.find(id);
   if (socket_entry == socket_map_.end())
     return NULL;
@@ -102,7 +104,7 @@ void ExtensionBluetoothEventRouter::DispatchDeviceEvent(
 }
 
 void ExtensionBluetoothEventRouter::AdapterPresentChanged(
-    chromeos::BluetoothAdapter* adapter, bool present) {
+    device::BluetoothAdapter* adapter, bool present) {
   if (adapter != adapter_.get()) {
     DVLOG(1) << "Ignoring event for adapter " << adapter->address();
     return;
@@ -114,7 +116,7 @@ void ExtensionBluetoothEventRouter::AdapterPresentChanged(
 }
 
 void ExtensionBluetoothEventRouter::AdapterPoweredChanged(
-    chromeos::BluetoothAdapter* adapter, bool has_power) {
+    device::BluetoothAdapter* adapter, bool has_power) {
   if (adapter != adapter_.get()) {
     DVLOG(1) << "Ignoring event for adapter " << adapter->address();
     return;
@@ -126,7 +128,7 @@ void ExtensionBluetoothEventRouter::AdapterPoweredChanged(
 }
 
 void ExtensionBluetoothEventRouter::AdapterDiscoveringChanged(
-    chromeos::BluetoothAdapter* adapter, bool discovering) {
+    device::BluetoothAdapter* adapter, bool discovering) {
   if (adapter != adapter_.get()) {
     DVLOG(1) << "Ignoring event for adapter " << adapter->address();
     return;
@@ -144,7 +146,8 @@ void ExtensionBluetoothEventRouter::AdapterDiscoveringChanged(
 }
 
 void ExtensionBluetoothEventRouter::DeviceAdded(
-    chromeos::BluetoothAdapter* adapter, chromeos::BluetoothDevice* device) {
+    device::BluetoothAdapter* adapter,
+    device::BluetoothDevice* device) {
   if (adapter != adapter_.get()) {
     DVLOG(1) << "Ignoring event for adapter " << adapter->address();
     return;
@@ -170,4 +173,4 @@ void ExtensionBluetoothEventRouter::DispatchBooleanValueEvent(
       event_name, args.Pass(), NULL, GURL());
 }
 
-}  // namespace chromeos
+}  // namespace extensions
