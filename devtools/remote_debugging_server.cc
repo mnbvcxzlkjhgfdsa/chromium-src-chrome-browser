@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "chrome/browser/debugger/remote_debugging_server.h"
+#include "chrome/browser/devtools/remote_debugging_server.h"
 
-#include "chrome/browser/debugger/browser_list_tabcontents_provider.h"
+#include "chrome/browser/devtools/browser_list_tabcontents_provider.h"
 #include "chrome/browser/ui/webui/devtools_ui.h"
 #include "content/public/browser/devtools_http_handler.h"
 #include "net/base/tcp_listen_socket.h"

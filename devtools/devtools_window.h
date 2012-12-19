@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef CHROME_BROWSER_DEBUGGER_DEVTOOLS_WINDOW_H_
-#define CHROME_BROWSER_DEBUGGER_DEVTOOLS_WINDOW_H_
+#ifndef CHROME_BROWSER_DEVTOOLS_DEVTOOLS_WINDOW_H_
+#define CHROME_BROWSER_DEVTOOLS_DEVTOOLS_WINDOW_H_
 
 #include <string>
 #include <vector>
 
 #include "base/basictypes.h"
 #include "base/memory/scoped_ptr.h"
-#include "chrome/browser/debugger/devtools_file_helper.h"
-#include "chrome/browser/debugger/devtools_toggle_action.h"
+#include "chrome/browser/devtools/devtools_file_helper.h"
+#include "chrome/browser/devtools/devtools_toggle_action.h"
 #include "content/public/browser/devtools_client_host.h"
 #include "content/public/browser/devtools_frontend_host_delegate.h"
 #include "content/public/browser/notification_observer.h"
@@ -211,4 +211,4 @@ class DevToolsWindow : private content::NotificationObserver,
   DISALLOW_COPY_AND_ASSIGN(DevToolsWindow);
 };
 
-#endif  // CHROME_BROWSER_DEBUGGER_DEVTOOLS_WINDOW_H_
+#endif  // CHROME_BROWSER_DEVTOOLS_DEVTOOLS_WINDOW_H_
