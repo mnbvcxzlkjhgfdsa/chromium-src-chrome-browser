@@ -11,7 +11,7 @@
 #include "base/stringprintf.h"
 #include "base/test/test_timeouts.h"
 #include "base/utf_string_conversions.h"
-#include "chrome/browser/devtools/devtools_window.h"
+#include "chrome/browser/debugger/devtools_window.h"
 #include "chrome/browser/extensions/extension_service.h"
 #include "chrome/browser/extensions/extension_system.h"
 #include "chrome/browser/extensions/unpacked_installer.h"
