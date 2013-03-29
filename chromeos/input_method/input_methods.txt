@@ -1,3 +1,4 @@
+# TODO(nona): Remove this file, this is only for migration.
 # The list of input methods that we support. The input methods metadata is
 # also defined here. We use this data for the following purposes.
 #
@@ -49,7 +50,7 @@
 #   and update the following files by running this script.
 #
 #    * chrome/app/generated_resources.grd
-#    * chrome/browser/resources/keyboard_overlay_data.js
+#    * chrome/browser/resources/chromeos/keyboard_overlay_data.js
 #    * chrome/browser/ui/webui/chromeos/keyboard_overlay_ui.cc
 #
 #   If you add an XKB layout which depends on X11's Mod3Mask (e.g. Germany Neo2
