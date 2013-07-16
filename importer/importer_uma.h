@@ -2,19 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef CHROME_BROWSER_IMPORTER_IMPORTER_CREATOR_H_
-#define CHROME_BROWSER_IMPORTER_IMPORTER_CREATOR_H_
+#ifndef CHROME_BROWSER_IMPORTER_IMPORTER_UMA_H_
+#define CHROME_BROWSER_IMPORTER_IMPORTER_UMA_H_
 
 #include <string>
-
+#include "base/metrics/histogram.h"
 #include "chrome/common/importer/importer_type.h"
 
-class Importer;
-
 namespace importer {
-
-// Creates an Importer of the specified |type|.
-Importer* CreateImporterByType(ImporterType type);
 
 // Logs to UMA that an Importer of the specified |type| was used. Uses
 // |metric_postfix| to split by entry point. Note: Values passed via
@@ -25,4 +20,4 @@ void LogImporterUseToMetrics(const std::string& metric_prefix,
 
 }  // namespace importer
 
-#endif  // CHROME_BROWSER_IMPORTER_IMPORTER_CREATOR_H_
+#endif  // CHROME_BROWSER_IMPORTER_IMPORTER_UMA_H_
