@@ -1,9 +1,9 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright 2013 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef CHROME_BROWSER_SYNC_FILE_SYSTEM_LOCAL_FILE_SYNC_SERVICE_H_
-#define CHROME_BROWSER_SYNC_FILE_SYSTEM_LOCAL_FILE_SYNC_SERVICE_H_
+#ifndef CHROME_BROWSER_SYNC_FILE_SYSTEM_LOCAL_LOCAL_FILE_SYNC_SERVICE_H_
+#define CHROME_BROWSER_SYNC_FILE_SYSTEM_LOCAL_LOCAL_FILE_SYNC_SERVICE_H_
 
 #include <map>
 #include <set>
@@ -14,10 +14,10 @@
 #include "base/memory/ref_counted.h"
 #include "base/memory/weak_ptr.h"
 #include "base/observer_list.h"
+#include "chrome/browser/sync_file_system/local/local_origin_change_observer.h"
 #include "chrome/browser/sync_file_system/remote_change_processor.h"
-#include "webkit/browser/fileapi/syncable/local_origin_change_observer.h"
-#include "webkit/browser/fileapi/syncable/sync_callbacks.h"
-#include "webkit/browser/fileapi/syncable/sync_status_code.h"
+#include "chrome/browser/sync_file_system/sync_callbacks.h"
+#include "chrome/browser/sync_file_system/sync_status_code.h"
 
 class GURL;
 class Profile;
@@ -216,4 +216,4 @@ class LocalFileSyncService
 
 }  // namespace sync_file_system
 
-#endif  // CHROME_BROWSER_SYNC_FILE_SYSTEM_LOCAL_FILE_SYNC_SERVICE_H_
+#endif  // CHROME_BROWSER_SYNC_FILE_SYSTEM_LOCAL_LOCAL_FILE_SYNC_SERVICE_H_

@@ -1,15 +1,20 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright 2013 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "chrome/browser/sync_file_system/local_file_sync_service.h"
+#include "chrome/browser/sync_file_system/local/local_file_sync_service.h"
 
 #include "base/stl_util.h"
 #include "chrome/browser/extensions/extension_service.h"
 #include "chrome/browser/extensions/extension_system.h"
 #include "chrome/browser/profiles/profile.h"
+#include "chrome/browser/sync_file_system/file_change.h"
+#include "chrome/browser/sync_file_system/local/local_file_change_tracker.h"
+#include "chrome/browser/sync_file_system/local/local_file_sync_context.h"
+#include "chrome/browser/sync_file_system/local/sync_file_system_backend.h"
 #include "chrome/browser/sync_file_system/local_change_processor.h"
 #include "chrome/browser/sync_file_system/logger.h"
+#include "chrome/browser/sync_file_system/sync_file_metadata.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/browser_thread.h"
 #include "content/public/browser/site_instance.h"
@@ -17,11 +22,6 @@
 #include "url/gurl.h"
 #include "webkit/browser/fileapi/file_system_context.h"
 #include "webkit/browser/fileapi/file_system_url.h"
-#include "webkit/browser/fileapi/syncable/file_change.h"
-#include "webkit/browser/fileapi/syncable/local_file_change_tracker.h"
-#include "webkit/browser/fileapi/syncable/local_file_sync_context.h"
-#include "webkit/browser/fileapi/syncable/sync_file_metadata.h"
-#include "webkit/browser/fileapi/syncable/sync_file_system_backend.h"
 
 using content::BrowserThread;
 using fileapi::FileSystemURL;

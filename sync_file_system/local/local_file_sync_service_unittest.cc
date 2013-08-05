@@ -1,4 +1,4 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Copyright 2013 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -10,9 +10,19 @@
 #include "base/run_loop.h"
 #include "base/stl_util.h"
 #include "base/threading/thread.h"
-#include "chrome/browser/sync_file_system/local_file_sync_service.h"
+#include "chrome/browser/sync_file_system/file_change.h"
+#include "chrome/browser/sync_file_system/local/canned_syncable_file_system.h"
+#include "chrome/browser/sync_file_system/local/local_file_change_tracker.h"
+#include "chrome/browser/sync_file_system/local/local_file_sync_context.h"
+#include "chrome/browser/sync_file_system/local/local_file_sync_service.h"
+#include "chrome/browser/sync_file_system/local/local_file_sync_status.h"
+#include "chrome/browser/sync_file_system/local/mock_sync_status_observer.h"
+#include "chrome/browser/sync_file_system/local/sync_file_system_backend.h"
 #include "chrome/browser/sync_file_system/mock_local_change_processor.h"
+#include "chrome/browser/sync_file_system/sync_file_metadata.h"
 #include "chrome/browser/sync_file_system/sync_file_system_test_util.h"
+#include "chrome/browser/sync_file_system/sync_status_code.h"
+#include "chrome/browser/sync_file_system/syncable_file_system_util.h"
 #include "chrome/test/base/testing_profile.h"
 #include "content/public/browser/browser_thread.h"
 #include "content/public/test/test_browser_thread_bundle.h"
@@ -20,16 +30,6 @@
 #include "testing/gmock/include/gmock/gmock.h"
 #include "testing/gtest/include/gtest/gtest.h"
 #include "webkit/browser/fileapi/file_system_context.h"
-#include "webkit/browser/fileapi/syncable/canned_syncable_file_system.h"
-#include "webkit/browser/fileapi/syncable/file_change.h"
-#include "webkit/browser/fileapi/syncable/local_file_change_tracker.h"
-#include "webkit/browser/fileapi/syncable/local_file_sync_context.h"
-#include "webkit/browser/fileapi/syncable/local_file_sync_status.h"
-#include "webkit/browser/fileapi/syncable/mock_sync_status_observer.h"
-#include "webkit/browser/fileapi/syncable/sync_file_metadata.h"
-#include "webkit/browser/fileapi/syncable/sync_file_system_backend.h"
-#include "webkit/browser/fileapi/syncable/sync_status_code.h"
-#include "webkit/browser/fileapi/syncable/syncable_file_system_util.h"
 
 using content::BrowserThread;
 using fileapi::FileSystemURL;
