@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef CHROME_BROWSER_POLICY_CONFIGURATION_POLICY_PREF_STORE_UNITTEST_H_
-#define CHROME_BROWSER_POLICY_CONFIGURATION_POLICY_PREF_STORE_UNITTEST_H_
+#ifndef CHROME_BROWSER_POLICY_CONFIGURATION_POLICY_PREF_STORE_TEST_H_
+#define CHROME_BROWSER_POLICY_CONFIGURATION_POLICY_PREF_STORE_TEST_H_
 
+#include "base/basictypes.h"
 #include "base/memory/ref_counted.h"
 #include "base/memory/scoped_ptr.h"
 #include "base/message_loop/message_loop.h"
-#include "chrome/browser/policy/configuration_policy_handler_list.h"
-#include "chrome/browser/policy/policy_service_impl.h"
+#include "components/policy/core/browser/configuration_policy_handler_list.h"
 #include "components/policy/core/common/mock_configuration_policy_provider.h"
+#include "components/policy/core/common/policy_service_impl.h"
 #include "testing/gtest/include/gtest/gtest.h"
 
 namespace policy {
@@ -39,4 +40,4 @@ class ConfigurationPolicyPrefStoreTest : public testing::Test {
 
 }  // namespace policy
 
-#endif  // CHROME_BROWSER_POLICY_CONFIGURATION_POLICY_PREF_STORE_UNITTEST_H_
+#endif  // CHROME_BROWSER_POLICY_CONFIGURATION_POLICY_PREF_STORE_TEST_H_
