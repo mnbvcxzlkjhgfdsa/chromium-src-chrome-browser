@@ -42,7 +42,6 @@
 #include "extensions/browser/info_map.h"
 #include "extensions/browser/process_manager.h"
 #include "extensions/common/constants.h"
-#include "net/base/host_port_pair.h"
 #include "net/base/net_errors.h"
 #include "net/base/net_log.h"
 #include "net/cookies/canonical_cookie.h"
